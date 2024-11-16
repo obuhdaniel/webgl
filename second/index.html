@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Drawing App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #2c2c2c;
+            touch-action: none;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .workspace {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #1e1e1e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .canvas-container {
+            position: relative;
+            transform-origin: center;
+            cursor: grab;
+        }
+
+        .canvas-container.grabbing {
+            cursor: grabbing;
+        }
+
+        #gl-canvas {
+            background: white;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+            width: 400px;  /* Default canvas size */
+            height: 400px;
+            touch-action: none;
+        }
+
+        .zoom-controls {
+            position: fixed;
+            right: 20px;
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: #333;
+            padding: 8px;
+            border-radius: 8px;
+            z-index: 100;
+        }
+
+        .zoom-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 4px;
+            background: #444;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .zoom-btn:hover {
+            background: #555;
+        }
+
+        .zoom-level {
+            color: white;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: #333;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 8px;
+            background: none;
+            cursor: pointer;
+        }
+
+        .size-control {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+        }
+
+        .size-control input {
+            width: 120px;
+        }
+
+        .size-value {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .save-btn {
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .save-btn:hover {
+            background: #45a049;
+        }
+    </style>
+<title>WebGL Example</title>
+  </head>
+  <body>
+    <div class="workspace">
+        <div class="canvas-container">
+            <canvas id="gl-canvas"></canvas>
+        </div>
+    </div>
+
+    <div class="zoom-controls">
+        <button class="zoom-btn" id="zoomIn">+</button>
+        <div class="zoom-level" id="zoomLevel">100%</div>
+        <button class="zoom-btn" id="zoomOut">-</button>
+        <button class="zoom-btn" id="resetZoom">⟲</button>
+    </div>
+
+    <div class="nav-bar">
+        <div class="tool-group">
+            <input type="color" id="colorPicker" class="color-picker" value="#000000" title="Choose color">
+        </div>
+        
+        <div class="tool-group size-control">
+            <input type="range" id="brushSize" min="1" max="50" value="10">
+            <span class="size-value" id="sizeValue">Size: 10px</span>
+        </div>
+        
+        <button class="save-btn" id="saveBtn">Save Drawing</button>
+    </div>
+    <script src="./scripts/compileProgram.js"></script>
+    <script src="./scripts/main.js"></script>
+  </body>
+</html>
