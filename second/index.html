@@ -5,153 +5,208 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Interactive Drawing App</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+       * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            background-color: #2c2c2c;
-            touch-action: none;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+body {
+    background-color: #2c2c2c;
+    touch-action: none;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+}
 
-        .workspace {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            background: #1e1e1e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.workspace {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #1e1e1e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    height: calc(100vh - 80px); /* Subtract navbar height */
+}
 
-        .canvas-container {
-            position: relative;
-            transform-origin: center;
-            cursor: grab;
-        }
+.canvas-container {
+    position: relative;
+    transform-origin: center;
+    cursor: grab;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .canvas-container.grabbing {
-            cursor: grabbing;
-        }
+.canvas-container.grabbing {
+    cursor: grabbing;
+}
 
-        #gl-canvas {
-            background: white;
-            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
-            width: 400px;  /* Default canvas size */
-            height: 400px;
-            touch-action: none;
-        }
+#gl-canvas {
+    background: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    max-width: 70vw;             /* Prevent overflow */
+    max-height: calc(90vh - 80px); /* Prevent overflow, account for navbar */
+    touch-action: none;
+}
 
-        .zoom-controls {
-            position: fixed;
-            right: 20px;
-            bottom: 100px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            background: #333;
-            padding: 8px;
-            border-radius: 8px;
-            z-index: 100;
-        }
+.zoom-controls {
+    position: fixed;
+    right: 20px;
+    bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(51, 51, 51, 0.9);
+    padding: 12px;
+    border-radius: 8px;
+    z-index: 100;
+    backdrop-filter: blur(5px);
+}
 
-        .zoom-btn {
-            width: 36px;
-            height: 36px;
-            border: none;
-            border-radius: 4px;
-            background: #444;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
+.zoom-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 6px;
+    background: #444;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: background 0.2s, transform 0.1s;
+}
 
-        .zoom-btn:hover {
-            background: #555;
-        }
+.zoom-btn:hover {
+    background: #555;
+    transform: scale(1.05);
+}
 
-        .zoom-level {
-            color: white;
-            text-align: center;
-            font-size: 12px;
-        }
+.zoom-level {
+    color: white;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+}
 
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            background: #333;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 10px;
-            gap: 10px;
-            z-index: 1000;
-        }
+.nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background: rgba(51, 51, 51, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 20px;
+    z-index: 1000;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-        .tool-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+.tool-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 0 15px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-        .color-picker {
-            width: 50px;
-            height: 50px;
-            border: none;
-            border-radius: 8px;
-            background: none;
-            cursor: pointer;
-        }
+.tool-group:last-child {
+    border-right: none;
+}
 
-        .size-control {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: white;
-        }
+.color-picker {
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
 
-        .size-control input {
-            width: 120px;
-        }
+.color-picker:hover {
+    transform: scale(1.05);
+}
 
-        .size-value {
-            font-size: 12px;
-            margin-top: 4px;
-        }
+.size-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    min-width: 150px;
+}
 
-        .save-btn {
-            padding: 12px 24px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
-        }
+.size-control input {
+    width: 140px;
+    height: 6px;
+    -webkit-appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+}
 
-        .save-btn:hover {
-            background: #45a049;
-        }
+.size-control input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.size-control input::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.size-value {
+    font-size: 13px;
+    margin-top: 6px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.save-btn {
+    padding: 12px 28px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.save-btn:hover {
+    background: #45a049;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.save-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
     </style>
 <title>WebGL Example</title>
   </head>
   <body>
     <div class="workspace">
         <div class="canvas-container">
-            <canvas id="gl-canvas"></canvas>
+            <canvas id="gl-canvas" width="400" height="400"></canvas>
         </div>
     </div>
 
@@ -175,6 +230,6 @@
         <button class="save-btn" id="saveBtn">Save Drawing</button>
     </div>
     <script src="./scripts/compileProgram.js"></script>
-    <script src="./scripts/main.js"></script>
+    <script src="./scripts/main.js" type="module"></script>
   </body>
 </html>

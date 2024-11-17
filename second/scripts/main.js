@@ -1,3 +1,5 @@
+import CanvasScrollHandler from "./scroll-handler.js";
+
 (async function () {
   const canvas = document.querySelector("#gl-canvas");
   const gl = canvas.getContext("webgl", { preserveDrawingBuffer: true });
@@ -6,6 +8,57 @@
     console.error("WebGL is not supported in this browser.");
     return;
   }
+
+  const container = document.createElement('div');
+  container.className = 'canvas-container';
+  canvas.parentNode.insertBefore(container, canvas);
+  container.appendChild(canvas);
+
+  const workspace = document.createElement('div');
+  workspace.className = 'workspace';
+  container.parentNode.insertBefore(workspace, container);
+  workspace.appendChild(container);
+
+
+      // Initialize scroll handler
+      const scrollHandler = new CanvasScrollHandler(canvas, container, workspace);
+
+      // Set up zoom controls
+      const zoomControls = document.createElement('div');
+      zoomControls.className = 'zoom-controls';
+      document.body.appendChild(zoomControls);
+  
+      const zoomInBtn = document.createElement('button');
+      const zoomOutBtn = document.createElement('button');
+      const resetZoomBtn = document.createElement('button');
+      const zoomLevelDisplay = document.createElement('div');
+  
+      zoomInBtn.className = 'zoom-btn';
+      zoomOutBtn.className = 'zoom-btn';
+      resetZoomBtn.className = 'zoom-btn';
+      zoomLevelDisplay.className = 'zoom-level';
+  
+      zoomInBtn.textContent = '+';
+      zoomOutBtn.textContent = '-';
+      resetZoomBtn.textContent = '⟲';
+      zoomLevelDisplay.textContent = '100%';
+  
+      zoomControls.appendChild(zoomInBtn);
+      zoomControls.appendChild(zoomLevelDisplay);
+      zoomControls.appendChild(zoomOutBtn);
+      zoomControls.appendChild(resetZoomBtn);
+  
+      // Add zoom control event listeners
+      zoomInBtn.addEventListener('click', (e) => scrollHandler.zoom('in', e));
+      zoomOutBtn.addEventListener('click', (e) => scrollHandler.zoom('out', e));
+      resetZoomBtn.addEventListener('click', () => scrollHandler.resetView());
+  
+      // Update zoom level display
+      workspace.addEventListener('zoomchange', (e) => {
+          zoomLevelDisplay.textContent = `${Math.round(e.detail.scale * 100)}%`;
+      });
+  
+  
 
   // Load shaders from external files
   const vertexShaderSource = await fetch("./shaders/vertexShader.glsl").then(res => res.text());
