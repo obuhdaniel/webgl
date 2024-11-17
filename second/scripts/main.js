@@ -94,4 +94,66 @@ import CanvasScrollHandler from "./scroll-handler.js";
     gl.uniform4f(color, r, g, b, 1);
     gl.drawArrays(gl.POINTS, 0, 1);
   }, 50);
+
+  
+  let isDrawing = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  function getCanvasPoint(e) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+          x: (e.clientX - rect.left) / scale,
+          y: (e.clientY - rect.top) / scale
+      };
+  }
+
+  canvas.addEventListener('mousedown', (e) => {
+      isDrawing = true;
+      const point = getCanvasPoint(e);
+      lastX = point.x;
+      lastY = point.y;
+  });
+
+  canvas.addEventListener('mousemove', (e) => {
+      if (!isDrawing) return;
+      
+      const point = getCanvasPoint(e);
+      
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(point.x, point.y);
+      ctx.strokeStyle = colorPicker.value;
+      ctx.lineWidth = brushSize.value / scale;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+      
+      lastX = point.x;
+      lastY = point.y;
+  });
+
+  canvas.addEventListener('mouseup', () => {
+      isDrawing = false;
+  });
+
+  canvas.addEventListener('mouseout', () => {
+      isDrawing = false;
+  });
+
+  // Tool controls
+  const colorPicker = document.getElementById('colorPicker');
+  const brushSize = document.getElementById('brushSize');
+  const sizeValue = document.getElementById('sizeValue');
+  const saveBtn = document.getElementById('saveBtn');
+
+  brushSize.addEventListener('input', () => {
+      sizeValue.textContent = `Size: ${brushSize.value}px`;
+  });
+
+  saveBtn.addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.download = 'drawing.png';
+      link.href = canvas.toDataURL();
+      link.click();
+  });
 })();
