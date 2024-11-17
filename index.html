@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL Projects</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f3f4f6; min-height: 100vh;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 48px 16px;">
+        
+        <header style="text-align: center; margin-bottom: 48px;">
+            <h1 style="font-size: 2.5rem; color: #1f2937; margin-bottom: 16px;">Welcome to My WebGL Projects</h1>
+            <p style="font-size: 1.25rem; color: #4b5563; margin: 0;">Explore interactive 3D experiences powered by WebGL</p>
+        </header>
+
+        
+        <div style="display: flex; flex-direction: column; gap: 32px; max-width: 1000px; margin: 0 auto;">
+            
+            <div style="background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden; transition: box-shadow 0.3s ease;">
+                <div style="height: 200px; background-color: #e5e7eb;">
+                    <img src="./screenshots/1.png" alt="Project 1 Preview" style="width: 100%; height: 100%; object-fit: cover;"/>
+                </div>
+                <div style="padding: 24px;">
+                    <h2 style="font-size: 1.5rem; color: #1f2937; margin: 0 0 8px 0;">Keyboard Controlled Cube</h2>
+                    <p style="color: #4b5563; margin: 0 0 16px 0;">Experimented on a single Cube that changes fragment segment color on position change</p>
+                    <a href="/first/index.html" style="display: inline-block; background-color: #3b82f6; color: white; padding: 8px 24px; border-radius: 6px; text-decoration: none; transition: background-color 0.3s ease;">Launch Project</a>
+                </div>
+            </div>
+
+            
+            <div style="background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden; transition: box-shadow 0.3s ease;">
+                <div style="height: 200px; background-color: #e5e7eb;">
+                    <img src="./screenshots/2.png" alt="Project 2 Preview" style="width: 100%; height: 100%; object-fit: cover;"/>
+                </div>
+                <div style="padding: 24px;">
+                    <h2 style="font-size: 1.5rem; color: #1f2937; margin: 0 0 8px 0;">Multiplying Colored Cube Art</h2>
+                    <p style="color: #4b5563; margin: 0 0 16px 0;">Discover another dimension of WebGL with this unique visualization of multiple occuring cubes.</p>
+                    <a href="/second/index.html" style="display: inline-block; background-color: #3b82f6; color: white; padding: 8px 24px; border-radius: 6px; text-decoration: none; transition: background-color 0.3s ease;">Launch Project</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <footer style="text-align: center; padding: 24px; color: #4b5563;">
+        <p style="margin: 0;">Created by OBUHDANIEL with ❤️</p>
+    </footer>
+
+    <style>
+               div[style*="box-shadow"]:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        a[style*="background-color"]:hover {
+            background-color: #2563eb;
+        }
+        
+        @media (min-width: 768px) {
+            div[style*="flex-direction: column"] {
+                flex-direction: row !important;
+            }
+        }
+    </style>
+</body>
+</html>
